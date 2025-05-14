@@ -15,6 +15,29 @@ $ ansible-playbook -i "localhost, " -c local /path/to/playbook.yml
 
 ## Lists
 
+### Snippets with users and groups
+
+```yaml
+- name: Add several users
+  ansible.builtin.user:
+    name: "{{ item }}"
+    state: present
+    groups: "wheel"
+  loop:
+     - testuser1
+     - testuser2
+
+
+- name: Add several users
+  ansible.builtin.user:
+    name: "{{ item.name }}"
+    state: present
+    groups: "{{ item.groups }}"
+  loop:
+    - { name: 'testuser1', groups: 'wheel' }
+    - { name: 'testuser2', groups: 'root' }
+```
+
 ### First exercise
 
 ```yaml
@@ -101,36 +124,6 @@ ok: [localhost] => {
 ```
 
 ### Fourth exercise
-
-```yaml
----
-- hosts: localhost
-  gather_facts: False
-  vars:
-    input:
-      - a
-      - b
-      - c
-      - d
-    prefix: "-suffix"
-    result: "{{ input | product([prefix]) |  map('join') |  join(' ')}}"
-  tasks:
-    - name: execute
-      shell: |
-        echo "a-tool {{ result }}"
-      register: atool
-    - debug: msg="{{ atool.stdout }}"
-```
-
-Output:
-
-```
-ok: [localhost] => {
-    "msg": "a-tool a-suffix b-suffix c-suffix d-suffix"
-}
-```
-
-### Fifth exercise
 
 ```yaml
 ---
